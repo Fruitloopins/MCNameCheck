@@ -11,5 +11,5 @@ The script will automatically stop checking a username and log it to the same di
 
 Image of it operating and the log it creates if a name change is detected:
 
-![image](https://user-images.githubusercontent.com/49851457/208664159-785c9ca0-9ab2-4d63-9cbb-9c722b8dd5bb.png)
+![image](https://user-images.githubusercontent.com/49851457/208677880-212abd11-2117-4521-845d-fc826641ded7.png)
 ![image](https://user-images.githubusercontent.com/49851457/208664961-04ac308b-93ae-42cf-bc1b-82f4d15db67b.png)
