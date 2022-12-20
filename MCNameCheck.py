@@ -15,36 +15,57 @@ def write_file():
 if not os.path.exists("config.ini"):
     config.add_section("Accounts")
     config.set("Accounts", "accounts", "UUIDs Go Here")
+    config.add_section("Settings")
+    config.set("Settings", "cooldown", "0.75")
+    config.set("Settings", "failcooldown", "5")
 
     with open("config.ini", "w") as configfile:
         config.write(configfile)
 
+#Reading settings
 config.read("config.ini")
+cooldown = float(config["Settings"]["cooldown"])
+failcooldown = float(config["Settings"]["failcooldown"])
 
 #If user has not filled any UUIDs into config.ini this error will appear
 if config["Accounts"]["accounts"] == "UUIDs Go Here":
-    print("Please fill your selected UUIDs into the created config.ini file before running the script again")
+    print("Please fill your selected UUIDs separated by a space into the created config.ini file before running the script again.")
     quit()
 
 uuidlist = config["Accounts"]["accounts"].split()
-print(uuidlist)
 
 #Adding all current names of provided UUIDs to a list
 namelist = []
 for i in uuidlist:
-    request = requests.get(f"https://api.mojang.com/user/profile/{i}").json()
-    name = request["name"]
-    namelist.append(name)
-    print("Added", name, "to namelist")
+    try:
+        request = requests.get(f"https://api.mojang.com/user/profile/{i}").json()
+        name = request["name"]
+        namelist.append(name)
+        print("Added", name, "to namelist")
+    except:
+        print("Unable to read username from API... Waiting", failcooldown, "seconds before continuing.")
+        time.sleep(failcooldown)
 
-print(namelist)
+#Reading out settings to confirm with user
+print("\nSettings:")
+print("Provided UUIDs -", uuidlist)
+print("Provided usernames -", namelist)
+
+input("\nPress any key to continue...")
 
 #Checking all provided UUIDs for changes to their name in the API
 while True:
     for i in uuidlist:
-        print("Checking account", i)
-        request = requests.get(f"https://api.mojang.com/user/profile/{i}").json()
-        namecheck = request["name"]
+        time.sleep(cooldown)
+        ts = time.time()
+        timestamp = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y %H:%M:%S.%f')
+        print(timestamp, "| Checking account:", i)
+        try:
+            request = requests.get(f"https://api.mojang.com/user/profile/{i}").json()
+            namecheck = request["name"]
+        except:
+            print("Unable to read username from API... Waiting 5 seconds before continuing.")
+            time.sleep(failcooldown)
 
         #If a change is detected print this to log and remove UUID from list then continue checking
         if namecheck not in namelist:
