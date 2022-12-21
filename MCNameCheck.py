@@ -6,7 +6,7 @@ import datetime
 import logging
 
 #Creating log file and config if necessary
-logging.basicConfig(filename="namechange.log", encoding="utf-8", level=logging.INFO)
+logging.basicConfig(filename = "namechange.log", encoding = "utf-8", level = logging.INFO)
 
 config = configparser.ConfigParser()
 def write_file():
@@ -28,23 +28,30 @@ cooldown = float(config["Settings"]["cooldown"])
 failcooldown = float(config["Settings"]["failcooldown"])
 
 #If user has not filled any UUIDs into config.ini this error will appear
-if config["Accounts"]["accounts"] == "UUIDs Go Here":
-    print("Please fill your selected UUIDs separated by a space into the created config.ini file before running the script again.")
-    quit()
+while True:
+    if config["Accounts"]["accounts"] == "UUIDs Go Here":
+        input("Please fill your selected UUIDs separated by a space into the created config.ini file before pressing any key to continue.")
+        config.read("config.ini")
+
+    elif config["Accounts"]["accounts"] != "UUIDs Go Here":
+        break
 
 uuidlist = config["Accounts"]["accounts"].split()
 
 #Adding all current names of provided UUIDs to a list
 namelist = []
-for i in uuidlist:
-    try:
-        request = requests.get(f"https://api.mojang.com/user/profile/{i}").json()
-        name = request["name"]
-        namelist.append(name)
-        print("Added", name, "to namelist")
-    except:
-        print("Unable to read username from API... Waiting", failcooldown, "seconds before continuing.")
-        time.sleep(failcooldown)
+var = 0
+while var == 0:
+    for i in uuidlist:
+        try:
+            request = requests.get(f"https://api.mojang.com/user/profile/{i}").json()
+            name = request["name"]
+            namelist.append(name)
+            print("Added", name, "to namelist")
+            var = var + 1
+        except:
+            print("Unable to read username from API... Waiting", failcooldown, "seconds before continuing.")
+            time.sleep(failcooldown)
 
 #Reading out settings to confirm with user
 print("\nSettings:")
