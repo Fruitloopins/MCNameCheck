@@ -47,10 +47,10 @@ while var == 0:
             request = requests.get(f"https://api.mojang.com/user/profile/{i}").json()
             name = request["name"]
             namelist.append(name)
-            print("Added", name, "to namelist")
+            print("Added", name, "to namelist.")
             var = var + 1
         except:
-            print("Unable to read username from API... Waiting", failcooldown, "seconds before continuing.")
+            print("Unable to read username from API... Waiting", failcooldown, "second/s before continuing.")
             time.sleep(failcooldown)
 
 #Reading out settings to confirm with user
@@ -60,24 +60,36 @@ print("Provided usernames -", namelist)
 
 input("\nPress any key to continue...")
 
+#Use this to check for uptime
+starttime = time.time()
+
 #Checking all provided UUIDs for changes to their name in the API
 while True:
     for i in uuidlist:
-        time.sleep(cooldown)
-        ts = time.time()
-        timestamp = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y %H:%M:%S.%f')
-        print(timestamp, "| Checking account:", i)
+        #Finding name relative to the position of this UUID in the namelist to print it
+        index = uuidlist.index(i)
+        username = namelist[index]
+        #Grabbing current time and calculating uptime to two decimal points to print in check message
+        timestamp = datetime.datetime.now().isoformat()
+        uptime = "%.2f" % round(time.time() - starttime, 2)
+        print(index, "| Uptime:", uptime, "| Time:", timestamp, "| Checking account:", username, i)
+        #Try to grab the current username of the UUID being checked and store it to a variable
         try:
             request = requests.get(f"https://api.mojang.com/user/profile/{i}").json()
             namecheck = request["name"]
+        #If that is not possible tell the user and wait for the specified time in config
         except:
-            print("Unable to read username from API... Waiting 5 seconds before continuing.")
+            print("Unable to read username from API... Waiting", failcooldown, "second/s before continuing.")
             time.sleep(failcooldown)
 
-        #If a change is detected print this to log and remove UUID from list then continue checking
+        #If a change is detected to the username run this
         if namecheck not in namelist:
-            ts = time.time()
-            timestamp = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y %H:%M:%S.%f')
-            print("Account", namecheck, i, "changed at", timestamp)
-            logging.info("Account %s %s changed at %s", namecheck, i, timestamp)
-            uuidlist.remove(i)
+            print("Account", username, i, "changed at", timestamp, "to", namecheck)
+            logging.info("Account %s %s changed at %s to %s.", username, i, timestamp, namecheck)
+            #Removing the current name from namelist and uuidlist
+            del namelist[index]
+            del uuidlist[index]
+            time.sleep(cooldown)
+        #If namecheck is the same as the username have a little nap
+        else:
+            time.sleep(cooldown)
