@@ -2,6 +2,8 @@
 
 This script constantly checks a set of provided Minecraft UUIDs for changes to their associated username. This is useful for small scale name sniping if you want to know (close to) the exact time the name was changed as Mojang no longer provides an API route for this information.
 
+With this info you can either manually wait for said time to change the username on an account or use this info in conjunction with another program to automatically use accounts that will snipe the name for you.
+
 # Usage
 Simply [install Python](https://www.python.org/downloads/), go to the directory with MCNameCheck.py in it in your terminal and run `python3 MCNameCheck.py`, it will create a config file in the same directory where you can enter as many UUIDs as you want separated by spaces. The more UUIDs you add the longer it takes to cycle through all names so you should try to keep the amount low.
 
