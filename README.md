@@ -5,9 +5,9 @@ This script constantly checks a set of provided Minecraft UUIDs for changes to t
 With this info you can either manually wait for said time to change the username on an account or use this info in conjunction with another program to automatically use accounts that will snipe the name for you.
 
 # Dependencies
-[Python](https://www.python.org/downloads/)  
-[pip](https://pip.pypa.io/en/stable/installation/)  
-[requests](https://pypi.org/project/requests/) `pip install requests`  
+- [Python](https://www.python.org/downloads/)  
+- [pip](https://pip.pypa.io/en/stable/installation/)  
+- [requests](https://pypi.org/project/requests/) `pip install requests`  
 
 # Usage
 Point your terminal/command line to the directory with MCNameCheck.py in it and run `python3 MCNameCheck.py`, it will create a config file in the same directory where you can enter as many UUIDs as you want separated by spaces. The more UUIDs you add the longer it takes to cycle through all names so you should try to keep the amount low. This limit is in place to prevent Mojang from blocking requests from you for spamming the API.
